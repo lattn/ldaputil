@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改密码</title>
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <form id="myForm">
+        <div class="mb-3">
+            <label for="username" class="form-label">用户名</label>
+            <input type="text" name="username" class="form-control" id="username">
+        </div>
+        <div class="mb-3">
+            <label for="oldpassword" class="form-label">密码</label>
+            <input type="password" name="password" class="form-control" id="oldpassword">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">新密码</label>
+            <input type="password" name="new_password" class="form-control" id="password">
+        </div>
+        <button type="submit" class="btn btn-primary">提交</button>
+    </form>
+</div>
+
+<script>
+    window.addEventListener("load", function () {
+        function sendData() {
+            var XHR = new XMLHttpRequest();
+
+            // 我们把这个 FormData 和表单元素绑定在一起。
+            var FD  = new FormData(form);
+
+            // 我们定义了数据成功发送时会发生的事。
+            XHR.addEventListener("load", function(event) {
+                var ret = JSON.parse(event.target.responseText)
+                if (ret.status === 'success') {
+                    alert('修改成功')
+                    location.reload()
+                } else {
+                    alert('修改失败')
+                }
+            });
+
+            // 我们定义了失败的情形下会发生的事
+            XHR.addEventListener("error", function(event) {
+                alert('哎呀！出了一些问题。');
+            });
+
+            // 我们设置了我们的请求
+            XHR.open("POST", "/update");
+
+            // 发送的数据是由用户在表单中提供的
+            XHR.send(FD);
+        }
+
+        // 我们需要获取表单元素
+        var form = document.getElementById("myForm");
+
+        // ...然后接管表单的提交事件
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            sendData();
+        });
+    });
+</script>
+
+</body>
+</html>
